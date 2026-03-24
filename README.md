@@ -1,151 +1,112 @@
+<div align="center">
+<img src="assets/hero.svg" width="100%"/>
+</div>
+
 # agent-benchmark
 
-**Performance benchmarking for LLM agents.** Timed runs with warmup, statistical summaries (mean/p50/p95/p99/std), A/B comparison, and regression detection — zero dependencies.
+**Performance benchmarking for agents for LLM agents. Zero external dependencies.**
 
-```
+[![PyPI](https://img.shields.io/pypi/v/agent-benchmark?color=blue)](https://pypi.org/project/agent-benchmark/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Zero deps](https://img.shields.io/badge/dependencies-zero-brightgreen)](pyproject.toml)
+
+---
+
+## The Problem
+
+Production LLM agents fail silently. Without performance benchmarking for agents, you get undefined behaviour at scale — race conditions, lost state, cascading failures, and no way to debug what went wrong.
+
+`agent-benchmark` gives you a production-ready performance benchmarking for agents primitive with a clean API, tested edge cases, and zero configuration.
+
+## Installation
+
+```bash
 pip install agent-benchmark
 ```
 
----
+Or from source:
+
+```bash
+git clone https://github.com/darshjme/agent-benchmark.git
+cd agent-benchmark
+pip install -e .
+```
 
 ## Quick Start
 
 ```python
-from agent_benchmark import Benchmark
+from agent_benchmark import *  # see API reference below
 
-def my_agent_call():
-    # simulate work
-    import time; time.sleep(0.01)
-
-b = Benchmark("gpt-4o-mini", warmup=3, runs=20)
-result = b.run(my_agent_call)
-print(result.summary())
-# [gpt-4o-mini] runs=20 mean=10.12ms p50=10.09ms p95=10.48ms p99=10.51ms std=0.15ms min=9.98ms max=10.55ms
+# See examples/ directory for complete working examples
 ```
-
----
-
-## Regression Detection
-
-Did your last refactor make the agent slower? Catch it automatically:
-
-```python
-from agent_benchmark import Benchmark
-
-def v1_agent():
-    import time; time.sleep(0.050)   # baseline: ~50ms
-
-def v2_agent():
-    import time; time.sleep(0.060)   # new version: ~60ms (20% slower)
-
-b = Benchmark("regression-check", warmup=2, runs=10)
-
-baseline = b.run(v1_agent)
-current  = b.run(v2_agent)
-
-if current.regression_vs(baseline, threshold=0.10):
-    print(f"🚨 REGRESSION DETECTED! {current.mean_ms:.1f}ms vs baseline {baseline.mean_ms:.1f}ms")
-    print(f"   Slowdown: {(current.mean_ms - baseline.mean_ms) / baseline.mean_ms * 100:.1f}%")
-else:
-    print("✅ No regression — within threshold")
-```
-
-Output:
-```
-🚨 REGRESSION DETECTED! 60.3ms vs baseline 50.1ms
-   Slowdown: 20.3%
-```
-
----
-
-## A/B Comparison
-
-```python
-from agent_benchmark import Benchmark
-
-b = Benchmark("model-compare", warmup=3, runs=15)
-comp = b.compare(v1_agent, v2_agent, name_a="GPT-4o-mini", name_b="Claude-Haiku")
-
-print(f"Winner: {comp.winner}")
-print(f"Speedup: {comp.speedup:.2f}x faster")
-print(comp.result_a.summary())
-print(comp.result_b.summary())
-```
-
----
-
-## @benchmark Decorator
-
-```python
-from agent_benchmark import benchmark
-
-# Single-call timing
-@benchmark
-def fetch_context(query: str):
-    ...
-
-fetch_context("what is RAG?")
-# [benchmark] fetch_context took 12.847ms
-
-# Multi-run stats
-@benchmark(runs=20)
-def embed_text(text: str):
-    ...
-
-embed_text("hello world")
-# [embed_text] runs=20 mean=3.21ms p50=3.18ms p95=3.45ms ...
-```
-
----
 
 ## API Reference
 
-### `Benchmark(name, warmup=3, runs=10)`
+The main classes and functions are defined in `agent_benchmark/__init__.py`.
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `run(func, *args, **kwargs)` | `BenchmarkResult` | Run with warmup + timed iterations |
-| `compare(func_a, func_b, name_a, name_b)` | `ComparisonResult` | Side-by-side benchmark |
+Key exports: `Timed runs · p50/p95/p99 · regression detection · @benchmark`
 
-### `BenchmarkResult`
+All classes follow a consistent interface:
+- Instantiate with sensible defaults
+- Compose with other arsenal libraries
+- Zero external dependencies required
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `mean_ms` | float | Arithmetic mean latency |
-| `median_ms` | float | p50 latency |
-| `p95_ms` | float | 95th percentile latency |
-| `p99_ms` | float | 99th percentile latency |
-| `std_ms` | float | Standard deviation |
-| `min_ms` | float | Minimum observed latency |
-| `max_ms` | float | Maximum observed latency |
+See the source code and `tests/` directory for verified usage examples.
 
-| Method | Description |
-|--------|-------------|
-| `is_faster_than(other)` | True if `self.mean_ms < other.mean_ms` |
-| `regression_vs(baseline, threshold=0.10)` | True if >10% slower than baseline |
-| `summary()` | One-line human-readable string |
-| `to_dict()` | Serialize to dict (JSON-friendly) |
+## How It Works
 
-### `ComparisonResult`
+```mermaid
+flowchart LR
+    A[Agent Task] --> B[agent-benchmark]
+    B --> C{Decision}
+    C -->|success| D[✅ Result]
+    C -->|failure| E[⚠️ Handle]
+    E --> B
 
-| Property/Method | Description |
-|-----------------|-------------|
-| `winner` | `"A"` or `"B"` — lower mean wins |
-| `speedup` | How many times faster the winner is |
-| `to_dict()` | Full serialization including nested results |
+    style B fill:#161b22,stroke:#58a6ff,stroke-width:2,color:#58a6ff
+    style D fill:#1a3320,stroke:#238636,color:#3fb950
+    style E fill:#3d1a1a,stroke:#f85149,color:#f85149
+```
+
+```mermaid
+sequenceDiagram
+    participant Agent
+    participant AgentBenchmark as agent-benchmark
+    participant Output
+
+    Agent->>AgentBenchmark: initialize()
+    AgentBenchmark-->>Agent: ready
+
+    loop Agent Run
+        Agent->>AgentBenchmark: process(input)
+        AgentBenchmark-->>Agent: result
+    end
+
+    Agent->>Output: deliver(result)
+```
+
+## Philosophy
+
+The student who measures their progress becomes the master. agent-benchmark is that measurement.
 
 ---
 
-## Design Principles
+## Part of the Arsenal
 
-- **Zero dependencies** — only `time.perf_counter` from stdlib
-- **High-resolution timing** — `perf_counter` has sub-microsecond resolution
-- **Warmup by default** — avoids cold-start JIT/cache effects skewing results
-- **Statistical rigor** — p95/p99 catch tail latency that mean misses
-- **Regression-first** — `regression_vs()` is the primary CI integration point
+`agent-benchmark` is one of six production libraries for LLM agents:
+
+| Library | Purpose |
+|---------|---------|
+| [herald](https://github.com/darshjme/herald) | Semantic task routing |
+| [engram](https://github.com/darshjme/engram) | Agent memory |
+| [sentinel](https://github.com/darshjme/sentinel) | ReAct loop guards |
+| [verdict](https://github.com/darshjme/verdict) | Agent evaluation |
+| [agent-guardrails](https://github.com/darshjme/agent-guardrails) | Output validation |
+| [agent-observability](https://github.com/darshjme/agent-observability) | Tracing & metrics |
+
+→ [arsenal](https://github.com/darshjme/arsenal) — the complete stack
 
 ---
 
-## License
-
-MIT
+*Built by [Darshankumar Joshi](https://github.com/darshjme), Gujarat, India.*
