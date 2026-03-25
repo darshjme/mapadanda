@@ -1,20 +1,22 @@
 <div align="center">
 
-<img src="assets/mapadanda-hero.png" width="100%" alt="mapadanda hero banner" />
+<img src="assets/mapadanda-hero.png" alt="मापदंड — mapadanda by Darshankumar Joshi" width="100%" />
 
-# मापदंड
-## mapadanda
+# 🪷 मापदंड
+## `mapadanda`
 
 > *Arthashastra / Manusmriti*
 
-**The Sacred Measure — dharmic standard**
+### The Sacred Measure — dharmic standard
 
-_Benchmarking framework for LLM agents. Latency, throughput, cost, quality metrics._
+**Benchmarking framework for LLM agents. Latency, throughput, cost, quality metrics.**
 
-[![Python](https://img.shields.io/badge/Python-3.9+-DB2777.svg?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-DB2777.svg?style=flat-square)](LICENSE)
-[![Part of Arsenal](https://img.shields.io/badge/Part%20of-Vedic%20Arsenal-DB2777.svg?style=flat-square)](https://github.com/darshjme/arsenal)
-[![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-DB2777.svg?style=flat-square)](pyproject.toml)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python)](https://python.org)
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen?style=flat-square)](https://github.com/darshjme/mapadanda)
+[![Vedic Arsenal](https://img.shields.io/badge/Vedic%20Arsenal-100%20libs-pink?style=flat-square)](https://github.com/darshjme/arsenal)
+[![License](https://img.shields.io/badge/License-MIT-pink?style=flat-square)](LICENSE)
+
+*Formerly `agent-benchmark` — Part of the [**Vedic Arsenal**](https://github.com/darshjme/arsenal): 100 production-grade Python libraries for LLM agents, each named from the Vedas, Puranas, and Mahakavyas.*
 
 </div>
 
@@ -22,96 +24,80 @@ _Benchmarking framework for LLM agents. Latency, throughput, cost, quality metri
 
 ## The Vedic Principle
 
-मापदंड — The Sacred Measure — is the dharmic standard by which all things are judged. The Arthashastra of Chanakya obsessed over precise measurement: of armies, revenues, productivity, and performance. Without a standard, there is no improvement; without measurement, there is no dharma.
+The ancient *Mapadanda* principle from Arthashastra / Manusmriti finds its modern expression in this library.
 
-LLM engineering without benchmarking is like building the Taj Mahal without a plumb line — beautiful in imagination, but structurally uncertain. mapadanda brings the precision of Vedic measurement science to your agent systems: latency percentiles, throughput curves, cost efficiency ratios, quality scores. Every model comparison is a sacred examination; every performance regression is a dharmic failure.
+Just as the Vedic sages understood that every phenomenon in the universe follows deep patterns — patterns of creation, maintenance, and dissolution — `mapadanda` applies this wisdom to LLM agent engineering.
 
-Build faster, smarter, cheaper — with data. mapadanda gives your LLM agents the measurement infrastructure of production engineering.
+The concept of *मापदंड* (The Sacred Measure — dharmic standard) speaks directly to the technical problem this library solves. When the sages codified this principle in Arthashastra / Manusmriti, they were describing not just a spiritual truth but a computational truth that would take humanity millennia to rediscover in silicon.
+
+This is not coincidence. The universe has one nature. The Vedas described it first.
 
 ---
 
 ## How It Works
 
 ```mermaid
-flowchart TD
-    A[Input] --> B[Process]
-    B --> C{Valid?}
-    C -->|Yes| D[✅ Output]
-    C -->|No| E[🔄 Handle]
+flowchart LR
+    A[Input] --> B[mapadanda]
+    B --> C{Process}
+    C -- Success --> D[Output]
+    C -- Error --> E[Handle]
     E --> B
+    style B fill:#6b21a8,color:#fff
 ```
-
----
-
-## Quick Start
-
-```bash
-pip install mapadanda
-```
-
-```python
-from mapadanda import *
-
-# Initialize
-agent = Mapadanda()
-
-# Use
-result = agent.process(your_input)
-print(result)
-```
-
----
-
-## Features
-
-- ⚡ **Zero dependencies** — pure Python, no bloat
-- 🛡️ **Production-grade** — battle-tested patterns
-- 🔧 **Configurable** — sane defaults, full control
-- 📊 **Observable** — built-in metrics and logging
-- 🔄 **Async-ready** — full asyncio support
-- 🧪 **Tested** — comprehensive test coverage
 
 ---
 
 ## Installation
 
 ```bash
-# pip
 pip install mapadanda
+```
 
-# From source
-git clone https://github.com/darshjme/mapadanda
-cd mapadanda
-pip install -e .
+Or from source:
+```bash
+git clone https://github.com/darshjme/mapadanda.git
+cd mapadanda && pip install -e .
+```
+
+## Quick Start
+
+```python
+from mapadanda import *
+
+# See examples/ for full usage
 ```
 
 ---
 
-## Part of the Vedic Arsenal
+## The Vedic Arsenal
 
-`mapadanda` is part of the **[Vedic Arsenal](https://github.com/darshjme/arsenal)** — 100 production-grade Python libraries for LLM agents, named after Sanskrit concepts from the Upanishads, Mahabharata, Ramayana, and Vedic philosophy.
+`mapadanda` is one of 100 libraries in **[darshjme/arsenal](https://github.com/darshjme/arsenal)** — each named from sacred Indian literature:
 
-Each library is:
-- ✅ Zero-dependency
-- ✅ Production-ready
-- ✅ Individually installable
-- ✅ Part of a coherent ecosystem
+| Sanskrit Name | Source | Technical Function |
+|---|---|---|
+| `mapadanda` | Arthashastra / Manusmriti | The Sacred Measure — dharmic standard |
+
+Each library solves one problem. Zero external dependencies. Pure Python 3.8+.
 
 ---
 
-## Built by [Darshankumar Joshi](https://github.com/darshjme)
+## Contributing
 
-> *"Building the dharmic infrastructure for the AI age"*
-
-[![GitHub](https://img.shields.io/badge/GitHub-darshjme-DB2777.svg?style=flat-square&logo=github)](https://github.com/darshjme)
-[![Arsenal](https://img.shields.io/badge/Vedic%20Arsenal-100%20Libraries-DB2777.svg?style=flat-square)](https://github.com/darshjme/arsenal)
+1. Fork the repo
+2. Create feature branch (`git checkout -b fix/your-fix`)  
+3. Add tests — zero dependencies only
+4. Open a PR
 
 ---
 
 <div align="center">
 
-*मापदंड — The Sacred Measure — dharmic standard*
+**🪷 Built by [Darshankumar Joshi](https://github.com/darshjme)** · [@thedarshanjoshi](https://twitter.com/thedarshanjoshi)
 
-*From the Arthashastra / Manusmriti*
+*"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन"*
+*Your right is to action alone, never to its fruits. — Bhagavad Gita 2.47*
+
+[Vedic Arsenal](https://github.com/darshjme/arsenal) · [GitHub](https://github.com/darshjme) · [Twitter](https://twitter.com/thedarshanjoshi)
 
 </div>
